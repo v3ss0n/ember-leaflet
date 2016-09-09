@@ -70,6 +70,8 @@ export default BaseLayer.extend(ContainerMixin, {
   unregisterWithParent() { },
 
   createLayer() {
+    this.L.map.off()
+    this.L.map.remove()
     let options = this.get('options');
 
     // Don't set center and zoom right now.
@@ -77,6 +79,13 @@ export default BaseLayer.extend(ContainerMixin, {
     delete options.center;
     delete options.zoom;
     return this.L.map(this.element, options);
+  },
+
+  // Manually call `remove` method in the case of the root map layer.
+  layerTeardown() {
+    let layer = this._layer;
+    this._super(...arguments);
+    layer.remove();
   },
 
   didCreateLayer() {
